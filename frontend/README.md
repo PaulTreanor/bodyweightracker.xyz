@@ -1,4 +1,4 @@
-# weighttrack.app
+# bodyweighttracker.xyz
 
 Built with Gatsby, Tailwind, Shadcn, and TypeScript.
 

@@ -1,6 +1,6 @@
-# Weightmate backend 
+# bodyweighttracker.xyz backend 
 
-This deploys the backend infrastructure for weightmate. ApiGateway, lambda, and DynamoDB are used. 
+This deploys the backend infrastructure for bodyweighttracker.xyz. ApiGateway, lambda, and DynamoDB are used. 
 
 ## Useful commands
 
