@@ -1,4 +1,4 @@
-# bodyweighttracker.xyz
+# bodyweighttracker.com
 
 Built with Gatsby, Tailwind, Shadcn, and TypeScript.
 

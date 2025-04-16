@@ -1,6 +1,6 @@
-# bodyweighttracker.xyz backend 
+# bodyweighttracker.com backend 
 
-This deploys the backend infrastructure for bodyweighttracker.xyz. ApiGateway, lambda, and DynamoDB are used. 
+This deploys the backend infrastructure for bodyweighttracker.com. ApiGateway, lambda, and DynamoDB are used. 
 
 ## Useful commands
 
