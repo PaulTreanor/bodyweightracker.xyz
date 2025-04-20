@@ -43,8 +43,8 @@ export class CdkBackendStack extends cdk.Stack {
 		const userPool = new cognito.UserPool(this, 'WeightmateUserPool', {
 			userPoolName: 'WeightmateUserPool',
 			selfSignUpEnabled: true,
-			// Email verification false makes testing easier
-			autoVerify: { email: false }, 
+			// Email verification flow
+			autoVerify: { email: true }, 
 			signInAliases: {
 				email: true 
 			},

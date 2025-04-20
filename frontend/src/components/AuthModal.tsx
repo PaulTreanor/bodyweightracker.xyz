@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { signIn, signUp } from 'aws-amplify/auth';
+import { signIn, signUp, confirmSignUp, resendSignUpCode  } from 'aws-amplify/auth';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -27,6 +27,13 @@ export function AuthModal({ handleAuth }: { handleAuth: () => void }) {
 		confirmPassword: ''
 	});
 
+	const [verificationData, setVerificationData] = useState({
+		email: '',
+		code: ''
+	  });
+	
+	const [needsConfirmation, setNeedsConfirmation] = useState(false);
+
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -44,151 +51,237 @@ export function AuthModal({ handleAuth }: { handleAuth: () => void }) {
 		e.preventDefault();
 		
 		if (signupData.password !== signupData.confirmPassword) {
-			alert('Passwords do not match');
-			return;
+		  alert('Passwords do not match');
+		  return;
 		}
-
+	
 		try {
-			await signUp({
-				username: signupData.email,
-				password: signupData.password,
-				options: {
-					userAttributes: {
-						email: signupData.email,
-					}
-				}
-			});
-			handleAuth();
+		  await signUp({
+			username: signupData.email,
+			password: signupData.password,
+			options: {
+			  userAttributes: {
+				email: signupData.email,
+			  }
+			}
+		  });
+		  
+		  setVerificationData({ email: signupData.email, code: '' });
+		  setNeedsConfirmation(true);
+		  
 		} catch (err) {
-			console.error('Signup error:', err);
-			alert("Invalid email or password")
+		  console.error('Signup error:', err);
+		  alert("Error creating account. Please try again.")
 		}
 	}
+	
+	const handleConfirmSignup = async (e: React.FormEvent) => {
+		e.preventDefault();
+		
+		try {
+		  await confirmSignUp({
+			username: verificationData.email,
+			confirmationCode: verificationData.code
+		  });
+		  
+		  // After confirmation, sign in automatically
+		  try {
+			await signIn({ 
+			  username: verificationData.email, 
+			  password: signupData.password 
+			});
+			handleAuth();
+		  } catch (signInErr) {
+			console.error('Auto sign-in error:', signInErr);
+			alert("Account confirmed! Please sign in.");
+			setNeedsConfirmation(false);
+		  }
+		} catch (err) {
+		  console.error('Confirmation error:', err);
+		  alert("Invalid verification code. Please try again.");
+		}
+	}
+	
+	const handleResendCode = async () => {
+		try {
+		  await resendSignUpCode({
+			username: verificationData.email
+		  });
+		  alert("Verification code resent to your email");
+		} catch (err) {
+		  console.error('Error resending code:', err);
+		  alert("Error resending code. Please try again.");
+		}
+	  }
 
-  return (
-    <Dialog open={true}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Login or Sign Up</DialogTitle>
-          <DialogDescription>Enter your details to access your account or create a new one.</DialogDescription>
-        </DialogHeader>
-        <Tabs defaultValue="login">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="login">Login</TabsTrigger>
-            <TabsTrigger value="signup">Sign Up</TabsTrigger>
-          </TabsList>
-          <TabsContent value="login">
-            <form onSubmit={handleLogin}>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="email" className="text-right">
-                    Email
-                  </Label>
-                  <Input 
-                    id="email" 
-                    type="email" 
-                    className="col-span-3" 
-                    required
-                    value={loginData.email}
-                    onChange={(e) => setLoginData({
-                      ...loginData,
-                      email: e.target.value
-                    })}
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="password" className="text-right">
-                    Password
-                  </Label>
-                  <Input 
-                    id="password" 
-                    type="password" 
-                    className="col-span-3" 
-                    required
-                    value={loginData.password}
-                    onChange={(e) => setLoginData({
-                      ...loginData,
-                      password: e.target.value
-                    })}
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button type="submit">Login</Button>
-              </DialogFooter>
-            </form>
-          </TabsContent>
-          <TabsContent value="signup">
-					<form onSubmit={handleSignup}>
-						<div className="grid gap-4 py-4">
-							<div className="grid grid-cols-4 items-center gap-4">
-								<Label htmlFor="signup-email" className="text-right">
-									Email
-								</Label>
-								<Input 
-									id="signup-email" 
-									type="email" 
-									className="col-span-3" 
-									required
-									value={signupData.email}
-									onChange={(e) => setSignupData({
-										...signupData,
-										email: e.target.value
-									})}
-								/>
-							</div>
-							<div className="grid grid-cols-4 items-center gap-4">
-								<Label htmlFor="signup-password" className="text-right">
-									Password
-								</Label>
-								<Input 
-									id="signup-password" 
-									type="password" 
-									className="col-span-3" 
-									required
-									value={signupData.password}
-									onChange={(e) => setSignupData({
-										...signupData,
-										password: e.target.value
-									})}
-								/>
-							</div>
-							<div className="grid grid-cols-4 items-center gap-4">
-								<Label htmlFor="confirm-password" className="text-right">
-									Confirm
-								</Label>
-								<Input 
-									id="confirm-password" 
-									type="password" 
-									className="col-span-3" 
-									required
-									value={signupData.confirmPassword}
-									onChange={(e) => setSignupData({
-										...signupData,
-										confirmPassword: e.target.value
-									})}
-								/>
-							</div>
+	return (
+		<Dialog open={true}>
+			<DialogContent className="sm:max-w-[425px]">
+			<DialogHeader>
+				<DialogTitle>Login or Sign Up</DialogTitle>
+				<DialogDescription>Enter your details to access your account or create a new one.</DialogDescription>
+			</DialogHeader>
+			
+			{needsConfirmation ? (
+				// Confirmation UI
+				<div>
+				<form onSubmit={handleConfirmSignup}>
+					<div className="grid gap-4 py-4">
+					<div className="grid grid-cols-4 items-center gap-4">
+						<Label htmlFor="confirmation-email" className="text-right">
+						Email
+						</Label>
+						<Input 
+						id="confirmation-email" 
+						type="email" 
+						className="col-span-3" 
+						value={verificationData.email}
+						onChange={(e) => setVerificationData({
+							...verificationData,
+							email: e.target.value
+						})}
+						readOnly
+						/>
+					</div>
+					<div className="grid grid-cols-4 items-center gap-4">
+						<Label htmlFor="verification-code" className="text-right">
+						Code
+						</Label>
+						<Input 
+						id="verification-code" 
+						type="text" 
+						className="col-span-3" 
+						required
+						value={verificationData.code}
+						onChange={(e) => setVerificationData({
+							...verificationData,
+							code: e.target.value
+						})}
+						placeholder="Enter verification code"
+						/>
+					</div>
+					<div className="text-sm text-center text-gray-500">
+						Check your email for a verification code
+					</div>
+					</div>
+					<DialogFooter className="flex justify-between">
+					<Button type="button" variant="outline" onClick={handleResendCode}>
+						Resend Code
+					</Button>
+					<Button type="submit">
+						Verify Account
+					</Button>
+					</DialogFooter>
+				</form>
+				</div>
+			) : (
+				// Regular login/signup UI
+				<Tabs defaultValue="login">
+				<TabsList className="grid w-full grid-cols-2">
+					<TabsTrigger value="login">Login</TabsTrigger>
+					<TabsTrigger value="signup">Sign Up</TabsTrigger>
+				</TabsList>
+				<TabsContent value="login">
+					<form onSubmit={handleLogin}>
+					<div className="grid gap-4 py-4">
+						<div className="grid grid-cols-4 items-center gap-4">
+						<Label htmlFor="email" className="text-right">
+							Email
+						</Label>
+						<Input 
+							id="email" 
+							type="email" 
+							className="col-span-3" 
+							required
+							value={loginData.email}
+							onChange={(e) => setLoginData({
+							...loginData,
+							email: e.target.value
+							})}
+						/>
 						</div>
-						<DialogFooter>
-							<Button type="submit">Sign Up</Button>
-						</DialogFooter>
+						<div className="grid grid-cols-4 items-center gap-4">
+						<Label htmlFor="password" className="text-right">
+							Password
+						</Label>
+						<Input 
+							id="password" 
+							type="password" 
+							className="col-span-3" 
+							required
+							value={loginData.password}
+							onChange={(e) => setLoginData({
+							...loginData,
+							password: e.target.value
+							})}
+						/>
+						</div>
+					</div>
+					<DialogFooter>
+						<Button type="submit">Login</Button>
+					</DialogFooter>
 					</form>
-          </TabsContent>
-        </Tabs>
-        {/* <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-          </div>
-        </div>
-        <Button variant="outline" onClick={handleGoogleSignIn} className="w-full">
-          Sign in with Google
-        </Button> */}
-      </DialogContent>
-    </Dialog>
-  )
+				</TabsContent>
+				<TabsContent value="signup">
+					<form onSubmit={handleSignup}>
+					<div className="grid gap-4 py-4">
+						<div className="grid grid-cols-4 items-center gap-4">
+						<Label htmlFor="signup-email" className="text-right">
+							Email
+						</Label>
+						<Input 
+							id="signup-email" 
+							type="email" 
+							className="col-span-3" 
+							required
+							value={signupData.email}
+							onChange={(e) => setSignupData({
+							...signupData,
+							email: e.target.value
+							})}
+						/>
+						</div>
+						<div className="grid grid-cols-4 items-center gap-4">
+						<Label htmlFor="signup-password" className="text-right">
+							Password
+						</Label>
+						<Input 
+							id="signup-password" 
+							type="password" 
+							className="col-span-3" 
+							required
+							value={signupData.password}
+							onChange={(e) => setSignupData({
+							...signupData,
+							password: e.target.value
+							})}
+						/>
+						</div>
+						<div className="grid grid-cols-4 items-center gap-4">
+						<Label htmlFor="confirm-password" className="text-right">
+							Confirm
+						</Label>
+						<Input 
+							id="confirm-password" 
+							type="password" 
+							className="col-span-3" 
+							required
+							value={signupData.confirmPassword}
+							onChange={(e) => setSignupData({
+							...signupData,
+							confirmPassword: e.target.value
+							})}
+						/>
+						</div>
+					</div>
+					<DialogFooter>
+						<Button type="submit">Sign Up</Button>
+					</DialogFooter>
+					</form>
+				</TabsContent>
+				</Tabs>
+			)}
+			</DialogContent>
+		</Dialog>
+	)
 }
-
