@@ -175,7 +175,6 @@ export default function WeightChart({ data }: WeightChartProps) {
                 <div className="flex justify-end mt-4">
                     <Button 
                         onClick={downloadChart} 
-                        size="sm" 
                         variant="outline"
                         className="flex items-center gap-2"
                         disabled={isDownloading}
