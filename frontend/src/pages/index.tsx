@@ -128,4 +128,4 @@ const IndexPage: React.FC<PageProps> = () => {
 
 export default IndexPage
 
-export const Head: HeadFC = () => <title>bodyweighttracker.com</title>
+export const Head: HeadFC = () => <title>Bodyweight Tracker</title>
