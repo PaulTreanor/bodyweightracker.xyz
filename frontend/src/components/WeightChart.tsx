@@ -180,7 +180,7 @@ export default function WeightChart({ data }: WeightChartProps) {
                         disabled={isDownloading}
                     >
                         <Download size={16} />
-                        {isDownloading ? 'Processing...' : 'Download Chart Image'}
+                        {isDownloading ? 'Processing...' : 'Save Chart Image'}
                     </Button>
                 </div>
             </CardContent>
