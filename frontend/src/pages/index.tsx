@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { getCurrentUser, signOut, fetchAuthSession } from 'aws-amplify/auth'
 import type { HeadFC, PageProps } from "gatsby"
+import Helmet from 'react-helmet'
 import Header from "@/components/Header"
 import WeightInput from "@/components/WeightInput"
 import WeightChart from "@/components/WeightChart"
@@ -128,4 +129,11 @@ const IndexPage: React.FC<PageProps> = () => {
 
 export default IndexPage
 
-export const Head: HeadFC = () => <title>Bodyweight Tracker</title>
+export const Head: HeadFC = () => (
+	<>
+		<title>Bodyweight Tracker</title>
+		<Helmet>
+			<link rel="icon" href="/favicon.ico" />
+		</Helmet>
+	</>
+)
