@@ -107,4 +107,14 @@
   :focus-visible {
     @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
   }
+  
+  /* Chart download styling */
+  .chart-container.downloading .recharts-surface {
+    visibility: visible !important;
+    overflow: visible !important;
+  }
+  
+  .chart-container.downloading .recharts-line {
+    opacity: 1 !important;
+  }
 }

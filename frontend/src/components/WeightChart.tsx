@@ -55,21 +55,21 @@ export default function WeightChart({ data }: WeightChartProps) {
             const originalOverflow = document.body.style.overflow
             document.body.style.overflow = 'hidden'
             
-            toPng(chartContainerRef.current, { 
+            const element = chartContainerRef.current
+            
+            if (!element) {
+                setIsDownloading(false)
+                return
+            }
+            
+            toPng(element, { 
                 cacheBust: true,
                 quality: 1,
                 backgroundColor: '#fff',
-                width: chartContainerRef.current.offsetWidth,
-                height: chartContainerRef.current.offsetHeight,
+                width: element.offsetWidth,
+                height: element.offsetHeight,
                 skipFonts: true,
-                pixelRatio: 2, // Higher resolution for better quality
-                style: {
-                    // Force visible rendering of all elements
-                    '.recharts-surface': { 
-                        visibility: 'visible !important',
-                        overflow: 'visible !important'
-                    },
-                }
+                pixelRatio: 2,
             })
             .then((dataUrl) => {
                 const link = document.createElement('a')
@@ -181,7 +181,7 @@ export default function WeightChart({ data }: WeightChartProps) {
                         disabled={isDownloading}
                     >
                         <Download size={16} />
-                        {isDownloading ? 'Processing...' : 'Download Chart'}
+                        {isDownloading ? 'Processing...' : 'Download Chart Image'}
                     </Button>
                 </div>
             </CardContent>
