@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
   	extend: {
+  		fontFamily: {
+  			sans: ["var(--font-sans)"],
+  		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
@@ -53,7 +56,31 @@ module.exports = {
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
   			}
-  		}
+  		},
+  		boxShadow: {
+  			'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+  			'DEFAULT': '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+  			'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+  			'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+  			'xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+  			'2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+  			'inner': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+  			'none': 'none',
+  		},
+  		animation: {
+          'fade-in': 'fade-in 0.2s ease-in-out',
+          'slide-in': 'slide-in 0.2s ease-in-out',
+      },
+      keyframes: {
+          'fade-in': {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+          },
+          'slide-in': {
+              '0%': { transform: 'translateY(5px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+          },
+      },
   	}
   },
   plugins: [require("tailwindcss-animate")],
