@@ -165,7 +165,7 @@ export default function WeightChart({ data }: WeightChartProps) {
                                     stroke="var(--color-weight)" 
                                     name="Weight"
                                     strokeWidth={2}
-                                    dot={{ r: 4 }}
+                                    dot={{ r: 3 }}
                                     isAnimationActive={!isDownloading}
                                 />
                             </LineChart>
