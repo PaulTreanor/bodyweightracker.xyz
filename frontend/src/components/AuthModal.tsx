@@ -160,7 +160,7 @@ export function AuthModal({ handleAuth }: { handleAuth: () => void }) {
 						placeholder="Enter verification code"
 						/>
 					</div>
-					<div className="text-sm text-center text-gray-500">
+					<div className="text-sm text-center text-muted-foreground">
 						Check your email for a verification code
 					</div>
 					</div>

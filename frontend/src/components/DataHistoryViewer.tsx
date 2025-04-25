@@ -82,24 +82,24 @@ export default function DataHistoryViewer({ data }: DataHistoryViewerProps) {
 			{isOpen && (
 				<CardContent>
 					<div className="overflow-y-auto max-h-[calc(100vh-10rem)]">
-						<table className="min-w-full divide-y divide-gray-200">
-							<thead className="bg-gray-50 sticky top-0">
+						<table className="min-w-full divide-y divide-border">
+							<thead className="sticky top-0">
 								<tr>
-									<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-									<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Date</th>
+									<th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
 										Weight (kg)
 									</th>
 								</tr>
 							</thead>
-							<tbody className="bg-white divide-y divide-gray-200">
+							<tbody className="bg-card divide-y divide-border">
 								{[...data]
 									.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 									.map((entry, index) => (
-										<tr key={entry.date} className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}>
-											<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+										<tr key={entry.date} className={index % 2 === 0 ? "bg-muted" : "bg-card"}>
+											<td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
 												{formatDate(entry.date)}
 											</td>
-											<td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+											<td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
 												{entry.weight}
 											</td>
 										</tr>

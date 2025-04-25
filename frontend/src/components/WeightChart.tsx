@@ -5,6 +5,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { Button } from "@/components/ui/button"
 import { Download } from "lucide-react"
 import { toPng } from "html-to-image"
+import { chartColors } from "../lib/theme"
 import type { WeightEntry } from "../types"
 
 type WeightChartProps = {
@@ -65,7 +66,7 @@ export default function WeightChart({ data }: WeightChartProps) {
 			toPng(element, { 
 				cacheBust: true,
 				quality: 1,
-				backgroundColor: '#fff',
+				backgroundColor: 'hsl(var(--card))',
 				width: element.offsetWidth,
 				height: element.offsetHeight,
 				skipFonts: true,
@@ -95,36 +96,27 @@ export default function WeightChart({ data }: WeightChartProps) {
 				<div className="flex items-center justify-between">
 					<CardTitle>Weight Trend</CardTitle>
 					<div className="flex gap-2">
-						<button
+						<Button
 							onClick={() => setTimeRange('all')}
-							className={`px-3 py-1 rounded ${
-								timeRange === 'all' 
-									? 'bg-primary text-primary-foreground' 
-									: 'bg-secondary'
-							}`}
+							variant={timeRange === 'all' ? 'default' : 'secondary'}
+							size="sm"
 						>
 							All Time
-						</button>
-						<button
+						</Button>
+						<Button
 							onClick={() => setTimeRange('12m')}
-							className={`px-3 py-1 rounded ${
-								timeRange === '12m' 
-									? 'bg-primary text-primary-foreground' 
-									: 'bg-secondary'
-							}`}
+							variant={timeRange === '12m' ? 'default' : 'secondary'}
+							size="sm"
 						>
 							12 Months
-						</button>
-						<button
+						</Button>
+						<Button
 							onClick={() => setTimeRange('3m')}
-							className={`px-3 py-1 rounded ${
-								timeRange === '3m' 
-									? 'bg-primary text-primary-foreground' 
-									: 'bg-secondary'
-							}`}
+							variant={timeRange === '3m' ? 'default' : 'secondary'}
+							size="sm"
 						>
 							3 Months
-						</button>
+						</Button>
 					</div>
 				</div>
 			</CardHeader>
@@ -137,7 +129,7 @@ export default function WeightChart({ data }: WeightChartProps) {
 						config={{
 							weight: {
 								label: `Weight (kg)`,
-								color: "hsl(var(--chart-1))",
+								color: chartColors.primary,
 							},
 						}}
 						className="h-[200px] sm:h-[300px] md:h-[400px] w-full"
@@ -165,7 +157,7 @@ export default function WeightChart({ data }: WeightChartProps) {
 								<Line 
 									type="monotone" 
 									dataKey="weight" 
-									stroke="var(--color-weight)" 
+									stroke={chartColors.primary} 
 									name="Weight"
 									strokeWidth={2}
 									dot={{ r: 3 }}
