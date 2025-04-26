@@ -175,12 +175,15 @@ export default function WeightChart({ data }: WeightChartProps) {
 										const date = new Date(timestamp);
 										return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear().toString().slice(-2)}`;
 									}}
+									label={{ value: "Date", position: "insideBottom", offset: -10 }}
+									className='pb-10'
 								/>
 								<YAxis
 									domain={[
-										(dataMin: number) => Math.max(0, dataMin - 10),
-										(dataMax: number) => dataMax + 10,
+										(dataMin: number) => Math.max(0, dataMin - 4),
+										(dataMax: number) => dataMax + 4,
 									]}
+									label={{ value: "(kg)", angle: -90, position: "insideLeft" }}
 								/>
 								<ChartTooltip 
 									content={<WeightChartTooltip />}
