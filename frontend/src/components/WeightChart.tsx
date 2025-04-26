@@ -94,7 +94,7 @@ export default function WeightChart({ data }: WeightChartProps) {
 		<Card className="w-full max-w-[850px] mx-auto mb-8">
 			<CardHeader className="px-4 sm:px-6">
 				<div className="flex items-center justify-between">
-					<CardTitle>Weight Trend</CardTitle>
+					<CardTitle className="font-varela-round">Weight Trend</CardTitle>
 					<div className="flex gap-2">
 						<Button
 							onClick={() => setTimeRange('all')}

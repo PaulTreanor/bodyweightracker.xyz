@@ -60,7 +60,7 @@ export default function DataHistoryViewer({ data }: DataHistoryViewerProps) {
 		<Card className="w-full max-w-[850px] mx-auto mb-8">
 			<CardHeader>
 				<div className="flex justify-between items-center">
-					<CardTitle>Data History</CardTitle>
+					<CardTitle className="font-varela-round">Data History</CardTitle>
 					<div className="flex gap-2">
 						{data.length > 0 && (
 							<Button 

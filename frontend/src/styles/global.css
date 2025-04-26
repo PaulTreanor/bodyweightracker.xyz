@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Sriracha&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Varela+Round&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -16,7 +16,7 @@
 
 
     --font-sans: 'IBM Plex Mono', monospace;
-    --font-sriracha: 'Sriracha', cursive;
+    --font-varela-round: 'Varela Round', sans-serif;
     
     --background: var(--gray-paper);
     --foreground: 222 47% 11%;

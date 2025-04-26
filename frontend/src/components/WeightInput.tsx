@@ -17,7 +17,7 @@ export default function WeightInput({ onAddWeight}: WeightInputProps) {
 
     return (
         <form onSubmit={handleSubmit} className="mb-8 flex items-center justify-center space-x-2">
-            <label htmlFor="weight" className="text-lg font-medium">
+            <label htmlFor="weight" className="text-lg font-medium font-varela-round">
                 What is your weight today?
             </label>
             <Input
@@ -29,7 +29,7 @@ export default function WeightInput({ onAddWeight}: WeightInputProps) {
                 step="0.1"
                 required
             />
-            <Button type="submit">Add Weight</Button>
+            <Button type="submit" className="font-varela-round">Add Weight</Button>
         </form>
     )
 }
