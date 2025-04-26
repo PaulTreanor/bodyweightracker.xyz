@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Sriracha&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,38 +6,48 @@
 
 @layer base {
   :root {
+    /* BASE COLOURS */
+    --white-paper: 0 0% 99%;
+    --gray-paper: 210 17% 98%;
+    --prussian-blue: 231 52% 20%;
+    --dark-prussian-blue: 231 52% 11%;
+    --very-light-blue: 231 52% 94%;
+    --very-very-light-blue: 231 52% 97%;
+
+
     --font-sans: 'IBM Plex Mono', monospace;
+    --font-sriracha: 'Sriracha', cursive;
     
-    --background: 210 40% 98%;
+    --background: var(--gray-paper);
     --foreground: 222 47% 11%;
     
-    --card: 0 0% 100%;
+    --card: var(--white-paper);
     --card-foreground: 222 47% 11%;
     
-    --popover: 0 0% 100%;
+    --popover: var(--white-paper);
     --popover-foreground: 222 47% 11%;
     
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
+    --primary: var(--prussian-blue);
+    --primary-foreground: var(--gray-paper);
     --emphasis: 221 100% 45%;
     
-    --secondary: 210 40% 96.1%;
+    --secondary: var(--very-very-light-blue);
     --secondary-foreground: 222 47% 11%;
     
-    --muted: 210 40% 96.1%;
+    --muted: var(--very-very-light-blue);
     --muted-foreground: 215 16% 47%;
     
-    --accent: 221 83% 93%;
+    --accent: var(--very-very-light-blue);
     --accent-foreground: 222 47% 11%;
     
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: var(--gray-paper);
     
     --border: 214 32% 91%;
     --input: 214 32% 91%;
-    --ring: 221 83% 53%;
+    --ring: var(--prussian-blue);
     
-    --chart-1: 221 83% 53%;
+    --chart-1: var(--prussian-blue);
     --chart-2: 199 89% 48%;
     --chart-3: 163 94% 36%;
     --chart-4: 45 93% 47%;
@@ -47,30 +57,31 @@
   }
 
   .dark {
+    --white-paper: 38 20% 20%;
     --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    --foreground: var(--gray-paper);
     
-    --card: 222 47% 11%;
-    --card-foreground: 210 40% 98%;
+    --card: var(--white-paper);
+    --card-foreground: var(--gray-paper);
     
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
+    --popover: var(--white-paper);
+    --popover-foreground: var(--gray-paper);
     
     --primary: 217 91% 60%;
     --primary-foreground: 222 47% 11%;
     --emphasis: 221 100% 70%;
     
     --secondary: 217 32% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary-foreground: var(--gray-paper);
     
     --muted: 217 32% 17%;
     --muted-foreground: 215 20% 65%;
     
     --accent: 217 32% 17%;
-    --accent-foreground: 210 40% 98%;
+    --accent-foreground: var(--gray-paper);
     
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: var(--gray-paper);
     
     --border: 217 32% 17%;
     --input: 217 32% 17%;

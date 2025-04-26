@@ -9,6 +9,7 @@ module.exports = {
   	extend: {
   		fontFamily: {
   			sans: ["var(--font-sans)"],
+  			sriracha: ["var(--font-sriracha)"],
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

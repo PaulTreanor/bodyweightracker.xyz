@@ -1,6 +1,6 @@
 import React from "react"
 import { Button } from "@/components/ui/button"
-import { ChartLine } from "lucide-react"
+import bodyweightIcon from "../images/really-chunky-bodyweighttracker-icon.svg"
 
 interface HeaderProps {
     isLoggedIn: boolean
@@ -11,9 +11,15 @@ export default function Header({ isLoggedIn, handleLogout }: HeaderProps) {
     return (
         <header className="bg-card shadow">
             <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                    <ChartLine size={32} className="text-primary" />
-                    <h1 className="text-2xl font-bold text-primary">bodyweight tracker</h1>
+                <div className="flex items-center gap-1">
+                    {/* <div className="relative flex items-center justify-center] -mt-[1px]">
+                        <img 
+                            src={bodyweightIcon} 
+                            alt="Bodyweight Tracker" 
+                            className="w-12 h-12 text-primary"
+                        />
+                    </div> */}
+                    <h1 className="text-2xl font-sriracha font-bold text-primary">bodyweight tracker</h1>
                 </div>
                 {isLoggedIn && <Button variant="outline" onClick={handleLogout}>Log out</Button>}
                 
