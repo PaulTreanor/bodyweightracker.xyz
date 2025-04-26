@@ -19,6 +19,8 @@ export default function WeightChart({ data }: WeightChartProps) {
 	const chartContainerRef = useRef<HTMLDivElement>(null)
 	const [isDownloading, setIsDownloading] = useState(false)
 
+	const todayTimestamp = new Date().setHours(0, 0, 0, 0)
+	
 	const filteredData = data.filter(entry => {
 		const entryDate = new Date(entry.date)
 		const now = new Date()
@@ -39,6 +41,10 @@ export default function WeightChart({ data }: WeightChartProps) {
 			date: new Date(entry.date).getTime(),
 			weight: entry.weight
 		}))
+
+	// Define min and max for X axis
+	const dataMinDate = chartData.length > 0 ? Math.min(...chartData.map(d => d.date)) : todayTimestamp
+	const xAxisMax = todayTimestamp
 
 	const downloadChart = () => {
 		if (chartContainerRef.current === null) {
@@ -143,7 +149,7 @@ export default function WeightChart({ data }: WeightChartProps) {
 								<XAxis 
 									dataKey="date" 
 									type="number"
-									domain={['dataMin', 'dataMax']}
+									domain={[dataMinDate, xAxisMax]}
 									scale="time"
 									tickFormatter={(timestamp) => new Date(timestamp).toLocaleDateString()}
 								/>
