@@ -1,8 +1,9 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useMemo } from 'react'
 import { Line, LineChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
 import { Button } from "@/components/ui/button"
+import { WeightChartTooltip } from "@/components/WeightChartToolTip"
 import { Download } from "lucide-react"
 import { toPng } from "html-to-image"
 import { chartColors } from "../lib/theme"
@@ -13,6 +14,9 @@ type WeightChartProps = {
 }
 
 type TimeRange = 'all' | '12m' | '3m'
+
+
+
 
 export default function WeightChart({ data }: WeightChartProps) {
 	const [timeRange, setTimeRange] = useState<TimeRange>('3m')
@@ -45,6 +49,21 @@ export default function WeightChart({ data }: WeightChartProps) {
 	// Define min and max for X axis
 	const dataMinDate = chartData.length > 0 ? Math.min(...chartData.map(d => d.date)) : todayTimestamp
 	const xAxisMax = todayTimestamp
+
+	// Generate evenly spaced ticks
+	const ticks = useMemo(() => {
+		const tickCount = 5
+		const range = xAxisMax - dataMinDate
+		const step = range / (tickCount - 1)
+		
+		// Create array with precise values and ensure uniqueness
+		const tickValues = Array.from({ length: tickCount }, (_, i) => {
+			return Math.floor(dataMinDate + i * step)
+		})
+		
+		// Ensure all tick values are unique by checking for duplicates
+		return [...new Set(tickValues)]
+	}, [dataMinDate, xAxisMax])
 
 	const downloadChart = () => {
 		if (chartContainerRef.current === null) {
@@ -151,7 +170,11 @@ export default function WeightChart({ data }: WeightChartProps) {
 									type="number"
 									domain={[dataMinDate, xAxisMax]}
 									scale="time"
-									tickFormatter={(timestamp) => new Date(timestamp).toLocaleDateString()}
+									ticks={ticks}
+									tickFormatter={(timestamp) => {
+										const date = new Date(timestamp);
+										return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear().toString().slice(-2)}`;
+									}}
 								/>
 								<YAxis
 									domain={[
@@ -159,7 +182,9 @@ export default function WeightChart({ data }: WeightChartProps) {
 										(dataMax: number) => dataMax + 10,
 									]}
 								/>
-								<ChartTooltip content={<ChartTooltipContent />} />
+								<ChartTooltip 
+									content={<WeightChartTooltip />}
+								/>
 								<Line 
 									type="monotone" 
 									dataKey="weight" 
