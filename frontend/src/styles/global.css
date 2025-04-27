@@ -11,6 +11,7 @@
     --gray-paper: 210 17% 98%;
     --prussian-blue: 231 52% 20%;
     --dark-prussian-blue: 231 52% 11%;
+    --light-prussian-blue: 231 52% 50%;
     --very-light-blue: 231 52% 94%;
     --very-very-light-blue: 231 52% 97%;
 
@@ -46,6 +47,8 @@
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: var(--prussian-blue);
+
+    --link: var(--light-prussian-blue);
     
     --chart-1: var(--prussian-blue);
     --chart-2: 199 89% 48%;
