@@ -8,3 +8,11 @@ Built with Gatsby, Tailwind, Shadcn, and TypeScript.
 npm i
 npm run dev
 ```
+
+## Tests 
+
+```bash
+# Individual tests
+npx vitest Header.test.tsx --run
+
+```
