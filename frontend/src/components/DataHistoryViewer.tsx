@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Download } from "lucide-react"
+import { formatDate, exportToCsv } from "../utils/dataHistoryViewerUtils"
 import type { WeightEntry } from "../types"
 
 type DataHistoryViewerProps = {
@@ -11,50 +12,6 @@ type DataHistoryViewerProps = {
 export default function DataHistoryViewer({ data }: DataHistoryViewerProps) {
     const [isOpen, setIsOpen] = useState(false)
     const [isExporting, setIsExporting] = useState(false)
-    
-    const formatDate = (dateString: string) => {
-		const date = new Date(dateString)
-		return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'long', day: 'numeric' }).format(date)
-	}
-
-    const exportToCsv = () => {
-        setIsExporting(true)
-        
-        try {
-            const sortedData = [...data].sort((a, b) => 
-                new Date(b.date).getTime() - new Date(a.date).getTime()
-            )
-            
-            const csvContent = [
-                ['Date', 'Weight (kg)'],
-                ...sortedData.map(entry => [
-                    new Date(entry.date).toISOString().split('T')[0], // Format date as YYYY-MM-DD
-                    entry.weight.toString()
-                ])
-            ]
-            .map(row => row.join(','))
-            .join('\n')
-            
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' })
-            
-            const now = new Date()
-            const fileName = `weight-data-${now.toISOString().split('T')[0]}.csv`
-            const url = URL.createObjectURL(blob)
-            const link = document.createElement('a')
-            link.href = url
-            link.setAttribute('download', fileName)
-            
-            document.body.appendChild(link)
-            link.click()
-            
-            document.body.removeChild(link)
-            URL.revokeObjectURL(url)
-        } catch (error) {
-            console.error('Error exporting CSV:', error)
-        } finally {
-            setIsExporting(false)
-        }
-    }
 
 	return (
 		<Card className="w-full max-w-[850px] mx-auto mb-8">
@@ -64,7 +21,10 @@ export default function DataHistoryViewer({ data }: DataHistoryViewerProps) {
 					<div className="flex gap-2">
 						{data.length > 0 && (
 							<Button 
-								onClick={exportToCsv} 
+								onClick={() => exportToCsv({
+									setIsExporting,
+									data
+								})} 
 								variant="outline" 
 								className="flex items-center gap-2"
 								disabled={isExporting}

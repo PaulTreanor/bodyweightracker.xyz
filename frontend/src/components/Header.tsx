@@ -1,6 +1,5 @@
 import React from "react"
 import { Button } from "@/components/ui/button"
-import bodyweightIcon from "../images/really-chunky-bodyweighttracker-icon.svg"
 
 interface HeaderProps {
     isLoggedIn: boolean

@@ -5,20 +5,16 @@ import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
 import { Button } from "@/components/ui/button"
 import { WeightChartTooltip } from "@/components/WeightChartToolTip"
 import { Download } from "lucide-react"
-import { toPng } from "html-to-image"
 import { chartColors } from "../lib/theme"
-import type { WeightEntry } from "../types"
+import type { WeightEntry, TimeRange } from "../types"
+import { downloadChart } from '../utils/weightChartUtils'
+import { WeightChartTimeSelectorButtons } from '@/components/WeightChartTimeSelectorButtons'
 
 type WeightChartProps = {
 	data: WeightEntry[]
 }
 
-type TimeRange = 'all' | '12m' | '3m'
-
-
-
-
-export default function WeightChart({ data }: WeightChartProps) {
+const WeightChart = ({ data }: WeightChartProps) => {
 	const [timeRange, setTimeRange] = useState<TimeRange>('3m')
 	const chartContainerRef = useRef<HTMLDivElement>(null)
 	const [isDownloading, setIsDownloading] = useState(false)
@@ -65,84 +61,15 @@ export default function WeightChart({ data }: WeightChartProps) {
 		return [...new Set(tickValues)]
 	}, [dataMinDate, xAxisMax])
 
-	const downloadChart = () => {
-		if (chartContainerRef.current === null) {
-			return
-		}
-		
-		setIsDownloading(true)
-		
-		// Wait for the next render cycle to ensure the download class is applied
-		setTimeout(() => {
-			const now = new Date()
-			const fileName = `weight-chart-${now.toISOString().split('T')[0]}.png`
-			
-			// Apply styles that ensure SVG elements render properly
-			const originalOverflow = document.body.style.overflow
-			document.body.style.overflow = 'hidden'
-			
-			const element = chartContainerRef.current
-			
-			if (!element) {
-				setIsDownloading(false)
-				return
-			}
-			
-			toPng(element, { 
-				cacheBust: true,
-				quality: 1,
-				backgroundColor: 'hsl(var(--card))',
-				width: element.offsetWidth,
-				height: element.offsetHeight,
-				skipFonts: true,
-				pixelRatio: 2,
-			})
-			.then((dataUrl) => {
-				const link = document.createElement('a')
-				link.download = fileName
-				link.href = dataUrl
-				link.click()
-				
-				// Reset styles
-				document.body.style.overflow = originalOverflow
-				setIsDownloading(false)
-			})
-			.catch((err) => {
-				console.error('Error downloading chart:', err)
-				document.body.style.overflow = originalOverflow
-				setIsDownloading(false)
-			})
-		}, 100)
-	}
-
 	return (
 		<Card className="w-full max-w-[850px] mx-auto mb-8">
 			<CardHeader className="px-4 sm:px-6">
 				<div className="flex items-center justify-between">
 					<CardTitle className="font-varela-round">Weight Trend</CardTitle>
-					<div className="flex gap-2">
-						<Button
-							onClick={() => setTimeRange('all')}
-							variant={timeRange === 'all' ? 'default' : 'secondary'}
-							size="sm"
-						>
-							All Time
-						</Button>
-						<Button
-							onClick={() => setTimeRange('12m')}
-							variant={timeRange === '12m' ? 'default' : 'secondary'}
-							size="sm"
-						>
-							12 Months
-						</Button>
-						<Button
-							onClick={() => setTimeRange('3m')}
-							variant={timeRange === '3m' ? 'default' : 'secondary'}
-							size="sm"
-						>
-							3 Months
-						</Button>
-					</div>
+					<WeightChartTimeSelectorButtons
+						timeRange={timeRange}
+						setTimerange={setTimeRange}
+					/>
 				</div>
 			</CardHeader>
 			<CardContent className="px-2 sm:px-4">
@@ -203,7 +130,7 @@ export default function WeightChart({ data }: WeightChartProps) {
 				</div>
 				<div className="flex justify-end mt-4">
 					<Button 
-						onClick={downloadChart} 
+						onClick={() => downloadChart({ setIsDownloading, chartContainerRef })} 
 						variant="outline"
 						className="flex items-center gap-2"
 						disabled={isDownloading}
@@ -215,4 +142,8 @@ export default function WeightChart({ data }: WeightChartProps) {
 			</CardContent>
 		</Card>
 	)
+}
+
+export {
+	WeightChart
 }

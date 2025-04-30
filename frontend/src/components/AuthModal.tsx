@@ -1,51 +1,41 @@
 import React, { useState } from "react"
-import { signIn, signUp, confirmSignUp, resendSignUpCode  } from 'aws-amplify/auth';
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { signIn, signUp, confirmSignUp  } from 'aws-amplify/auth';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ConfirmSignupForm } from "./auth-modal/ConfirmSignupForm";
+import { LoginForm } from "./auth-modal/LoginForm";
+import { SignUpForm } from "./auth-modal/SignUpForm";
+import type { LoginData, SignupData, VerificationData } from "@/types";
 
-export function AuthModal({ handleAuth }: { handleAuth: () => void }) {
+export function AuthModal({
+	handleAuth
+}: {
+	handleAuth: () => void
+}) {
 
-  const [loginData, setLoginData] = useState({
+	const [loginData, setLoginData] = useState<LoginData>({
 		email: '',
 		password: ''
 	});
 	
-	const [signupData, setSignupData] = useState({
+	const [signupData, setSignupData] = useState<SignupData>({
 		email: '',
 		password: '',
 		confirmPassword: ''
 	});
 
-	const [verificationData, setVerificationData] = useState({
+	const [verificationData, setVerificationData] = useState<VerificationData>({
 		email: '',
 		code: ''
-	  });
+	});
 	
-	const [needsConfirmation, setNeedsConfirmation] = useState(false);
-
-
-	const handleLogin = async (e: React.FormEvent) => {
-		e.preventDefault();
-		try {
-			console.log({loginData})
-			await signIn({ username: loginData.email, password: loginData.password });
-			handleAuth();
-		} catch (err) {
-			console.error('Login error:', err);
-			alert("Invalid email or password")
-		}
-	}
+	const [needsConfirmation, setNeedsConfirmation] = useState<boolean>(false);
 
 	const handleSignup = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -101,18 +91,6 @@ export function AuthModal({ handleAuth }: { handleAuth: () => void }) {
 		  alert("Invalid verification code. Please try again.");
 		}
 	}
-	
-	const handleResendCode = async () => {
-		try {
-		  await resendSignUpCode({
-			username: verificationData.email
-		  });
-		  alert("Verification code resent to your email");
-		} catch (err) {
-		  console.error('Error resending code:', err);
-		  alert("Error resending code. Please try again.");
-		}
-	  }
 
 	return (
 		<Dialog open={true}>
@@ -123,57 +101,11 @@ export function AuthModal({ handleAuth }: { handleAuth: () => void }) {
 			</DialogHeader>
 			
 			{needsConfirmation ? (
-				// Confirmation UI
-				<div>
-				<form onSubmit={handleConfirmSignup}>
-					<div className="grid gap-4 py-4">
-					<div className="grid grid-cols-4 items-center gap-4">
-						<Label htmlFor="confirmation-email" className="text-right">
-						Email
-						</Label>
-						<Input 
-						id="confirmation-email" 
-						type="email" 
-						className="col-span-3" 
-						value={verificationData.email}
-						onChange={(e) => setVerificationData({
-							...verificationData,
-							email: e.target.value
-						})}
-						readOnly
-						/>
-					</div>
-					<div className="grid grid-cols-4 items-center gap-4">
-						<Label htmlFor="verification-code" className="text-right">
-						Code
-						</Label>
-						<Input 
-						id="verification-code" 
-						type="text" 
-						className="col-span-3" 
-						required
-						value={verificationData.code}
-						onChange={(e) => setVerificationData({
-							...verificationData,
-							code: e.target.value
-						})}
-						placeholder="Enter verification code"
-						/>
-					</div>
-					<div className="text-sm text-center text-muted-foreground">
-						Check your email for a verification code
-					</div>
-					</div>
-					<DialogFooter className="flex justify-between">
-					<Button type="button" variant="outline" onClick={handleResendCode}>
-						Resend Code
-					</Button>
-					<Button type="submit">
-						Verify Account
-					</Button>
-					</DialogFooter>
-				</form>
-				</div>
+				<ConfirmSignupForm
+					handleConfirmSignup={handleConfirmSignup}
+					verificationData={verificationData}
+					setVerificationData={setVerificationData}
+				/>
 			) : (
 				// Regular login/signup UI
 				<Tabs defaultValue="login">
@@ -182,102 +114,18 @@ export function AuthModal({ handleAuth }: { handleAuth: () => void }) {
 					<TabsTrigger value="signup">Sign Up</TabsTrigger>
 				</TabsList>
 				<TabsContent value="login">
-					<form onSubmit={handleLogin}>
-					<div className="grid gap-4 py-4">
-						<div className="grid grid-cols-4 items-center gap-4">
-						<Label htmlFor="email" className="text-right">
-							Email
-						</Label>
-						<Input 
-							id="email" 
-							type="email" 
-							className="col-span-3" 
-							required
-							value={loginData.email}
-							onChange={(e) => setLoginData({
-							...loginData,
-							email: e.target.value
-							})}
-						/>
-						</div>
-						<div className="grid grid-cols-4 items-center gap-4">
-						<Label htmlFor="password" className="text-right">
-							Password
-						</Label>
-						<Input 
-							id="password" 
-							type="password" 
-							className="col-span-3" 
-							required
-							value={loginData.password}
-							onChange={(e) => setLoginData({
-							...loginData,
-							password: e.target.value
-							})}
-						/>
-						</div>
-					</div>
-					<DialogFooter>
-						<Button type="submit">Login</Button>
-					</DialogFooter>
-					</form>
+					<LoginForm
+						handleAuth={handleAuth}
+						loginData={loginData}
+						setLoginData={setLoginData}
+					/>
 				</TabsContent>
 				<TabsContent value="signup">
-					<form onSubmit={handleSignup}>
-					<div className="grid gap-4 py-4">
-						<div className="grid grid-cols-4 items-center gap-4">
-						<Label htmlFor="signup-email" className="text-right">
-							Email
-						</Label>
-						<Input 
-							id="signup-email" 
-							type="email" 
-							className="col-span-3" 
-							required
-							value={signupData.email}
-							onChange={(e) => setSignupData({
-							...signupData,
-							email: e.target.value
-							})}
-						/>
-						</div>
-						<div className="grid grid-cols-4 items-center gap-4">
-						<Label htmlFor="signup-password" className="text-right">
-							Password
-						</Label>
-						<Input 
-							id="signup-password" 
-							type="password" 
-							className="col-span-3" 
-							required
-							value={signupData.password}
-							onChange={(e) => setSignupData({
-							...signupData,
-							password: e.target.value
-							})}
-						/>
-						</div>
-						<div className="grid grid-cols-4 items-center gap-4">
-						<Label htmlFor="confirm-password" className="text-right">
-							Confirm
-						</Label>
-						<Input 
-							id="confirm-password" 
-							type="password" 
-							className="col-span-3" 
-							required
-							value={signupData.confirmPassword}
-							onChange={(e) => setSignupData({
-							...signupData,
-							confirmPassword: e.target.value
-							})}
-						/>
-						</div>
-					</div>
-					<DialogFooter>
-						<Button type="submit">Sign Up</Button>
-					</DialogFooter>
-					</form>
+					<SignUpForm
+						handleSignup={handleSignup}
+						signupData={signupData}
+						setSignupData={setSignupData}
+					/>
 				</TabsContent>
 				</Tabs>
 			)}

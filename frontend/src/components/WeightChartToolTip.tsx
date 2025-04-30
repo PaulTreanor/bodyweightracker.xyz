@@ -1,8 +1,19 @@
 import React from 'react'
 
+type TooltipPayloadItem = {
+	value: number;
+	name: string;
+	dataKey: string;
+	payload: {
+		date: number;
+		weight: number;
+	};
+	color?: string;
+}
+
 type WeightChartTooltipProps = {
 	active?: boolean;
-	payload?: any[];
+	payload?: TooltipPayloadItem[];
 }
 
 const WeightChartTooltip = ({ active, payload }: WeightChartTooltipProps) => {
