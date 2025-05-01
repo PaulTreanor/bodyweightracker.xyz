@@ -16,9 +16,9 @@ export default function DataHistoryViewer({ data }: DataHistoryViewerProps) {
 	return (
 		<Card className="w-full max-w-[850px] mx-auto mb-8">
 			<CardHeader>
-				<div className="flex justify-between items-center">
+				<div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center">
 					<CardTitle className="font-varela-round">Data History</CardTitle>
-					<div className="flex gap-2">
+					<div className="flex gap-2 pt-2 sm:pt-0">
 						{data.length > 0 && (
 							<Button 
 								onClick={() => exportToCsv({

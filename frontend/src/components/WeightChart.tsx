@@ -90,12 +90,14 @@ const WeightChart = ({ data }: WeightChartProps) => {
 	return (
 		<Card className="w-full max-w-[850px] mx-auto mb-8">
 			<CardHeader className="px-4 sm:px-6">
-				<div className="flex items-center justify-between">
+				<div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center">
 					<CardTitle className="font-varela-round">Weight Trend</CardTitle>
-					<WeightChartTimeSelectorButtons
-						timeRange={timeRange}
-						setTimerange={setTimeRange}
-					/>
+					<div className="pt-2 sm:pt-0">
+						<WeightChartTimeSelectorButtons
+							timeRange={timeRange}
+							setTimerange={setTimeRange}
+						/>
+					</div>
 				</div>
 			</CardHeader>
 			<CardContent className="px-1 sm:px-4">
