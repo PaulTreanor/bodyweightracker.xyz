@@ -18,7 +18,23 @@ const WeightChart = ({ data }: WeightChartProps) => {
 	const [timeRange, setTimeRange] = useState<TimeRange>('3m')
 	const chartContainerRef = useRef<HTMLDivElement>(null)
 	const [isDownloading, setIsDownloading] = useState(false)
+	const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 0)
 
+	// Listen for window resize to adjust dot size
+	React.useEffect(() => {
+		const handleResize = () => {
+			setWindowWidth(window.innerWidth)
+		}
+		
+		if (typeof window !== 'undefined') {
+			window.addEventListener('resize', handleResize)
+			return () => window.removeEventListener('resize', handleResize)
+		}
+	}, [])
+	
+	// Calculate dot radius based on screen size
+	const dotRadius = windowWidth < 640 ? 1 : 3
+	
 	const todayTimestamp = new Date().setHours(0, 0, 0, 0)
 	
 	const filteredData = data.filter(entry => {
@@ -102,7 +118,6 @@ const WeightChart = ({ data }: WeightChartProps) => {
 										const date = new Date(timestamp);
 										return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear().toString().slice(-2)}`;
 									}}
-									label={{ value: "Date", position: "insideBottom", offset: -10 }}
 									className='pb-10'
 								/>
 								<YAxis
@@ -110,7 +125,6 @@ const WeightChart = ({ data }: WeightChartProps) => {
 										(dataMin: number) => Math.max(0, dataMin - 4),
 										(dataMax: number) => dataMax + 4,
 									]}
-									label={{ value: "(kg)", angle: -90, position: "insideLeft" }}
 								/>
 								<ChartTooltip 
 									content={<WeightChartTooltip />}
@@ -121,7 +135,7 @@ const WeightChart = ({ data }: WeightChartProps) => {
 									stroke={chartColors.primary} 
 									name="Weight"
 									strokeWidth={2}
-									dot={{ r: 3 }}
+									dot={{ r: dotRadius }}
 									isAnimationActive={!isDownloading}
 								/>
 							</LineChart>
