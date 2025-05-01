@@ -35,6 +35,16 @@ const WeightChart = ({ data }: WeightChartProps) => {
 	// Calculate dot radius based on screen size
 	const dotRadius = windowWidth < 640 ? 1 : 3
 	
+	// Dynamic margin based on screen size
+	const chartMargin = useMemo(() => {
+		return {
+			top: 5,
+			right: 10,
+			left: windowWidth < 640 ? 0 : 5, // Reduce left margin on mobile
+			bottom: 5
+		}
+	}, [windowWidth])
+	
 	const todayTimestamp = new Date().setHours(0, 0, 0, 0)
 	
 	const filteredData = data.filter(entry => {
@@ -64,7 +74,7 @@ const WeightChart = ({ data }: WeightChartProps) => {
 
 	// Generate evenly spaced ticks
 	const ticks = useMemo(() => {
-		const tickCount = 5
+		const tickCount = windowWidth < 640 ? 3 : 5  // Fewer ticks on mobile
 		const range = xAxisMax - dataMinDate
 		const step = range / (tickCount - 1)
 		
@@ -75,7 +85,7 @@ const WeightChart = ({ data }: WeightChartProps) => {
 		
 		// Ensure all tick values are unique by checking for duplicates
 		return [...new Set(tickValues)]
-	}, [dataMinDate, xAxisMax])
+	}, [dataMinDate, xAxisMax, windowWidth])
 
 	return (
 		<Card className="w-full max-w-[850px] mx-auto mb-8">
@@ -88,7 +98,7 @@ const WeightChart = ({ data }: WeightChartProps) => {
 					/>
 				</div>
 			</CardHeader>
-			<CardContent className="px-2 sm:px-4">
+			<CardContent className="px-1 sm:px-4">
 				<div 
 					ref={chartContainerRef} 
 					className={`chart-container w-full ${isDownloading ? 'downloading' : ''}`}
@@ -105,7 +115,7 @@ const WeightChart = ({ data }: WeightChartProps) => {
 						<ResponsiveContainer width="100%" height="100%">
 							<LineChart 
 								data={chartData} 
-								margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
+								margin={chartMargin}
 							>
 								<CartesianGrid strokeDasharray="3 3" />
 								<XAxis 
@@ -121,6 +131,8 @@ const WeightChart = ({ data }: WeightChartProps) => {
 									className='pb-10'
 								/>
 								<YAxis
+									width={windowWidth < 640 ? 30 : 40}
+									tickFormatter={(value) => windowWidth < 640 ? value.toFixed(0) : value.toFixed(1)}
 									domain={[
 										(dataMin: number) => Math.max(0, dataMin - 4),
 										(dataMax: number) => dataMax + 4,
