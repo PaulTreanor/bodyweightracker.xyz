@@ -43,20 +43,21 @@ const IndexPage: React.FC<PageProps> = () => {
 	return (
 		<div className="min-h-screen">
 		<Header isLoggedIn={isAuthenticated} handleLogout={() => handleLogout(setIsAuthenticated)}/>
-			<main className="container mx-auto px-4 py-8">
-				<>	
-					{!isAuthenticated &&
-						<AuthModal
-							handleAuth={handleAuth}
-						/>
-					}
-					<WeightInput onAddWeight={addWeight}/>
-					<WeightChart data={weightData}/>
-					<DataHistoryViewer data={weightData} />
-				</>
-			</main>
-	  </div>
-	)
+                        <main className="container mx-auto px-4 py-8 relative">
+                                {!isAuthenticated && (
+                                        <div className="absolute inset-0 z-10 bg-background/60 backdrop-blur-sm" />
+                                )}
+                                {!isAuthenticated && (
+                                        <AuthModal handleAuth={handleAuth} />
+                                )}
+                                <div className={!isAuthenticated ? "pointer-events-none select-none" : ""}>
+                                        <WeightInput onAddWeight={addWeight}/>
+                                        <WeightChart data={weightData}/>
+                                        <DataHistoryViewer data={weightData} />
+                                </div>
+                        </main>
+          </div>
+        )
 }
 
 export default IndexPage
