@@ -1,0 +1,6 @@
+# Robots.txt for bodyweighttracker.com
+User-agent: *
+Allow: /
+Disallow: /404/
+
+Sitemap: https://bodyweighttracker.com/sitemap-index.xml

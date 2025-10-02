@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ConfirmSignupForm } from "./auth-modal/ConfirmSignupForm";
 import { LoginForm } from "./auth-modal/LoginForm";
 import { SignUpForm } from "./auth-modal/SignUpForm";
+import { AuthModalContent } from "./auth-modal/AuthModalContent";
 import type { LoginData, SignupData, VerificationData } from "@/types";
 
 export function AuthModal({
@@ -23,7 +24,7 @@ export function AuthModal({
 		email: '',
 		password: ''
 	});
-	
+
 	const [signupData, setSignupData] = useState<SignupData>({
 		email: '',
 		password: '',
@@ -34,17 +35,17 @@ export function AuthModal({
 		email: '',
 		code: ''
 	});
-	
+
 	const [needsConfirmation, setNeedsConfirmation] = useState<boolean>(false);
 
 	const handleSignup = async (e: React.FormEvent) => {
 		e.preventDefault();
-		
+
 		if (signupData.password !== signupData.confirmPassword) {
 		  alert('Passwords do not match');
 		  return;
 		}
-	
+
 		try {
 		  await signUp({
 			username: signupData.email,
@@ -55,30 +56,30 @@ export function AuthModal({
 			  }
 			}
 		  });
-		  
+
 		  setVerificationData({ email: signupData.email, code: '' });
 		  setNeedsConfirmation(true);
-		  
+
 		} catch (err) {
 		  console.error('Signup error:', err);
 		  alert("Error creating account. Please try again.")
 		}
 	}
-	
+
 	const handleConfirmSignup = async (e: React.FormEvent) => {
 		e.preventDefault();
-		
+
 		try {
 		  await confirmSignUp({
 			username: verificationData.email,
 			confirmationCode: verificationData.code
 		  });
-		  
+
 		  // After confirmation, sign in automatically
 		  try {
-			await signIn({ 
-			  username: verificationData.email, 
-			  password: signupData.password 
+			await signIn({
+			  username: verificationData.email,
+			  password: signupData.password
 			});
 			handleAuth();
 		  } catch (signInErr) {
@@ -94,40 +95,53 @@ export function AuthModal({
 
 	return (
 		<Dialog open={true}>
-			<DialogContent className="sm:max-w-[425px]">
-			<DialogHeader>
-				<DialogTitle>Login or Sign Up</DialogTitle>
-				<DialogDescription>Enter your details to access your account or create a new one.</DialogDescription>
-			</DialogHeader>
-			
+			<DialogContent className="sm:max-w-[900px] max-w-[95vw]">
 			{needsConfirmation ? (
-				<ConfirmSignupForm
-					handleConfirmSignup={handleConfirmSignup}
-					verificationData={verificationData}
-					setVerificationData={setVerificationData}
-				/>
+				<>
+					<DialogHeader>
+						<DialogTitle>Verify Your Email</DialogTitle>
+						<DialogDescription>Enter the verification code sent to your email.</DialogDescription>
+					</DialogHeader>
+					<ConfirmSignupForm
+						handleConfirmSignup={handleConfirmSignup}
+						verificationData={verificationData}
+						setVerificationData={setVerificationData}
+					/>
+				</>
 			) : (
-				// Regular login/signup UI
-				<Tabs defaultValue="login">
-				<TabsList className="grid w-full grid-cols-2">
-					<TabsTrigger value="login">Login</TabsTrigger>
-					<TabsTrigger value="signup">Sign Up</TabsTrigger>
-				</TabsList>
-				<TabsContent value="login">
-					<LoginForm
-						handleAuth={handleAuth}
-						loginData={loginData}
-						setLoginData={setLoginData}
-					/>
-				</TabsContent>
-				<TabsContent value="signup">
-					<SignUpForm
-						handleSignup={handleSignup}
-						signupData={signupData}
-						setSignupData={setSignupData}
-					/>
-				</TabsContent>
-				</Tabs>
+				<div className="flex flex-col-reverse md:grid md:grid-cols-2 gap-8">
+					{/* Left column: SEO content (bottom on mobile) */}
+					<AuthModalContent />
+
+					{/* Right column: Auth forms (top on mobile) */}
+					<div className="pb-8 md:pb-0 border-b md:border-b-0 border-border">
+						<DialogHeader className="mb-4">
+							<DialogTitle>Get Started</DialogTitle>
+							<DialogDescription>Create an account or sign in to start tracking your weight today.</DialogDescription>
+						</DialogHeader>
+
+						<Tabs defaultValue="login">
+							<TabsList className="grid w-full grid-cols-2">
+								<TabsTrigger value="login">Login</TabsTrigger>
+								<TabsTrigger value="signup">Sign Up</TabsTrigger>
+							</TabsList>
+							<TabsContent value="login">
+								<LoginForm
+									handleAuth={handleAuth}
+									loginData={loginData}
+									setLoginData={setLoginData}
+								/>
+							</TabsContent>
+							<TabsContent value="signup">
+								<SignUpForm
+									handleSignup={handleSignup}
+									signupData={signupData}
+									setSignupData={setSignupData}
+								/>
+							</TabsContent>
+						</Tabs>
+					</div>
+				</div>
 			)}
 			</DialogContent>
 		</Dialog>
